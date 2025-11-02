@@ -5,13 +5,20 @@ on:
     branches:
       - master # default branch
 
+# 在jobs外部添加权限配置
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # 移除token配置，使用默认的GITHUB_TOKEN
+          # token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
       - name: Use Node.js 20
         uses: actions/setup-node@v4
@@ -28,6 +35,8 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
